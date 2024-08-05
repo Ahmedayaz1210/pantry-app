@@ -1,7 +1,12 @@
 "use client";
 import * as React from 'react';
+import { useState, useEffect } from 'react';
 import { firestore } from '@/firebase';
-import { AppBar, Box, Toolbar, IconButton, Typography, DemoContainer, DemoItem, Paper, Button, ButtonGroup, Stack, Fab, Modal, styled, alpha, TextField } from '@mui/material';
+import { 
+  AppBar, Box, Toolbar, IconButton, Typography, Button, 
+  ButtonGroup, Stack, Fab, Modal, TextField, Paper
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
 import { Delete as DeleteIcon, Add as AddIcon } from '@mui/icons-material';
 import { Open_Sans, Oswald } from 'next/font/google';
 import { query, collection, getDocs, getDoc, setDoc, doc, deleteDoc } from 'firebase/firestore';
@@ -12,6 +17,7 @@ import {
   Unstable_NumberInput as BaseNumberInput,
   numberInputClasses,
 } from '@mui/base/Unstable_NumberInput';
+
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/firebase';
 import { useRouter } from 'next/navigation';
@@ -19,7 +25,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { signOut } from 'firebase/auth';
 
 
-const NumberInput = React.forwardRef(function CustomNumberInput(props, ref) {
+const NumberInput = React.forwardRef(function NumberInput(props, ref) {
   const handleChange = (event, val) => {
     if (val > 0) {
       props.onChange(event, val);
@@ -213,16 +219,26 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function Home() {
   const [user] = useAuthState(auth);
   const router = useRouter();
-  const userSession = sessionStorage.getItem('user');
+  const [userSession, setUserSession] = useState(null);
   const [inventory, setInventory] = React.useState([]);
   const [open, setOpen] = React.useState(false);
   const [itemName, setItemName] = React.useState('');
   const [quantity, setQuantity] = React.useState(1);
   const [expiration, setExpiration] = React.useState(null);
 
-  if (!user && !userSession) {
-    router.push('/sign-in');
-  }
+  useEffect(() => {
+    // Check for user session on the client-side
+    const session = sessionStorage.getItem('user');
+    setUserSession(session);
+
+    if (!user && !session) {
+      router.push('/sign-in');
+    }
+  }, [user, router]);
+
+  useEffect(() => {
+    updateInventory();
+  }, []);
 
   const convertToDate = (dayjsDate) => {
     // If dayjsDate is not null, return a Date object
@@ -409,19 +425,26 @@ export default function Home() {
                 spacing={2}
                 width="100%"
               >
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DemoContainer components={['DatePicker']}>
-                    <DemoItem>
-                      <DatePicker
-                        value={expiration}
-                        onChange={(newValue) => {
-                          setExpiration(newValue);
-                        }}
-                        renderInput={(params) => <TextField {...params} />}
-                      />
-                    </DemoItem>
-                  </DemoContainer>
-                </LocalizationProvider>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DatePicker
+                label="Expiration Date"
+                value={expiration}
+                onChange={(newValue) => {
+                  setExpiration(newValue);
+                }}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    sx={{
+                      '& .MuiInputBase-root': {
+                        backgroundColor: '#ffffff',
+                      },
+                    }}
+                  />
+                )}
+              />
+            </LocalizationProvider>
               </Stack>
               <Button
                 sx={{ width: '20%' }}
