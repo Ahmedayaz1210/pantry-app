@@ -60,13 +60,30 @@ Inventory Pal revolutionizes home cooking by offering a smart, intuitive invento
    ```bash
    npm install @mui/material @emotion/react @emotion/styled
    ```
+4. Environment Setup
 
-4. Fire up the kitchen (dev server):
+Before running the project, you need to set up your own Firebase and Google Gemini API keys. Follow these steps:
+
+a. Create a `.env.local` file in the root directory of the project.
+
+b. Add the following environment variables to the `.env.local` file:
+
+   ```
+   NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
+   NEXT_PUBLIC_GEMINI_API_KEY=your_gemini_api_key
+   ```
+
+   Replace `your_firebase_api_key` with your actual Firebase configuration values and `your_gemini_api_key` with your Google Gemini API key.
+
+c. Save the file.
+
+**Note:** Never commit your `.env.local` file to version control. It's already included in the `.gitignore` file to prevent accidental commits.
+5. Fire up the kitchen (dev server):
    ```bash
    npm run dev
    ```
 
-5. Visit `http://localhost:3000` and start cooking up a storm! 🌪️
+6. Visit `http://localhost:3000` and start cooking up a storm! 🌪️
 
 ## 📘 Usage Guide
 
