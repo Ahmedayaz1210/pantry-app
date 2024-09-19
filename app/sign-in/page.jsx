@@ -1,3 +1,21 @@
+/**
+ * SignIn Component
+ * 
+ * This component provides the user authentication functionality for the InventoryPal application.
+ * It allows users to sign in using their email and password.
+ * 
+ * Key features:
+ * - User authentication with email and password
+ * - Firebase Authentication integration
+ * - Firestore database integration for user verification
+ * - Error handling and display
+ * - Navigation between sign-in and sign-up pages
+ * - Styled Material-UI components for consistent design
+ * 
+ * Note: The current implementation compares passwords stored in Firestore.
+ * This is not a secure practice and should be replaced with proper authentication methods in a production environment.
+ */
+
 "use client";
 
 import { useState } from "react";
@@ -20,6 +38,7 @@ import { Oswald, Open_Sans } from "next/font/google";
 import { useRouter } from "next/navigation";
 import { collection, query, where, getDocs } from 'firebase/firestore';
 
+// Font configurations
 const Oswald_font = Oswald({
   subsets: ["latin"],
   display: "swap",
@@ -32,6 +51,7 @@ const openSans = Open_Sans({
   weight: "700",
 });
 
+// Styled components for consistent UI
 const SignInPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(4),
   marginTop: theme.spacing(8),
@@ -55,18 +75,32 @@ const OrText = styled(Typography)(({ theme }) => ({
   color: "#01796F",
 }));
 
+/**
+ * SignIn Component
+ * 
+ * Renders the sign-in form and handles the authentication process.
+ */
 const SignIn = () => {
+  // State management for form inputs and error handling
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
+  
+  // Firebase authentication hook
   const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
 
+  /**
+   * Handles the sign-in process when the form is submitted.
+   * 
+   * @param {Event} event - The form submission event
+   */
   const handleSignIn = async (event) => {
     event.preventDefault(); // Prevent form from submitting and refreshing the page
     setError(""); // Clear any previous errors
 
     try {
+      // Query Firestore to check if the user exists
       const usersRef = collection(firestore, 'users');
       const q = query(usersRef, where('email', '==', email));
       const querySnapshot = await getDocs(q);
@@ -75,6 +109,7 @@ const SignIn = () => {
         const userData = querySnapshot.docs[0].data();
 
         // Check the stored password
+        // Note: This is not a secure practice and should be replaced with proper authentication in production
         if (userData.password === password) {
           console.log("Password matches.");
           await signInWithEmailAndPassword(email, password);
@@ -97,6 +132,7 @@ const SignIn = () => {
 
   return (
     <Box sx={{ backgroundColor: "#eeeeee", minHeight: "100vh" }}>
+      {/* Application bar */}
       <AppBar position="static" sx={{ backgroundColor: "#01796F" }}>
         <Toolbar>
           <Typography
@@ -109,6 +145,8 @@ const SignIn = () => {
           </Typography>
         </Toolbar>
       </AppBar>
+      
+      {/* Sign-in form container */}
       <Container maxWidth="xs">
         <SignInPaper elevation={3}>
           <LoginIcon sx={{ fontSize: 40, color: "#01796F" }} />
@@ -116,6 +154,7 @@ const SignIn = () => {
             Sign In
           </Typography>
           <Box component="form" sx={{ mt: 1 }} onSubmit={handleSignIn}>
+            {/* Email input field */}
             <TextField
               variant="outlined"
               margin="normal"
@@ -129,6 +168,7 @@ const SignIn = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+            {/* Password input field */}
             <TextField
               variant="outlined"
               margin="normal"
@@ -142,7 +182,9 @@ const SignIn = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            {/* Error message display */}
             {error && <Typography color="error">{error}</Typography>}
+            {/* Sign-in button */}
             <SignInButton
               type="submit"
               fullWidth
@@ -152,6 +194,7 @@ const SignIn = () => {
               Sign In
             </SignInButton>
             <OrText variant="body2" align="center">OR</OrText>
+            {/* Navigation to sign-up page */}
             <SignInButton
               type="button"
               fullWidth
