@@ -1,3 +1,18 @@
+/**
+ * SignUp Component
+ * 
+ * This component provides the user registration functionality for the InventoryPal application.
+ * It allows users to create a new account using their email and password.
+ * 
+ * Key features:
+ * - User registration with email and password
+ * - Firebase Authentication integration
+ * - Firestore database integration for storing user data
+ * - Error handling and display
+ * - Navigation between sign-up and sign-in pages
+ * - Styled Material-UI components for consistent design
+ */
+
 "use client";
 
 import { useState } from "react";
@@ -20,6 +35,7 @@ import { Oswald, Open_Sans } from "next/font/google";
 import { useRouter } from "next/navigation";
 import { collection, addDoc } from 'firebase/firestore';
 
+// Font configurations
 const Oswald_font = Oswald({
   subsets: ["latin"],
   display: "swap",
@@ -32,6 +48,7 @@ const openSans = Open_Sans({
   weight: "700",
 });
 
+// Styled components for consistent UI
 const SignInPaper = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(4),
   marginTop: theme.spacing(8),
@@ -55,27 +72,43 @@ const OrText = styled(Typography)(({ theme }) => ({
   color: "#01796F",
 }));
 
+/**
+ * SignUp Component
+ * 
+ * Renders the sign-up form and handles the registration process.
+ */
 const SignUp = () => {
+  // State management for form inputs and error handling
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  
+  // Firebase authentication hook
   const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);
+  
   const router = useRouter();
 
+  /**
+   * Handles the sign-up process when the form is submitted.
+   * 
+   * @param {Event} event - The form submission event
+   */
   const handleSignUp = async (event) => {
     event.preventDefault();
     setError(""); // Clear any previous errors
 
     try {
+      // Attempt to create a new user with Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(email, password);
       
       const uid = userCredential.user.uid;
 
+      // Store additional user data in Firestore
       const usersRef = collection(firestore, 'users');
       await addDoc(usersRef, {
         uid: uid,
         email: email,
-        password: password,
+        password: password, // Note: Storing passwords in plaintext is not recommended for production
       });
 
       console.log("Signed up successfully");
@@ -91,6 +124,7 @@ const SignUp = () => {
 
   return (
     <Box sx={{ backgroundColor: "#eeeeee", minHeight: "100vh" }}>
+      {/* Application bar */}
       <AppBar position="static" sx={{ backgroundColor: "#01796F" }}>
         <Toolbar>
           <Typography
@@ -103,6 +137,8 @@ const SignUp = () => {
           </Typography>
         </Toolbar>
       </AppBar>
+      
+      {/* Sign-up form container */}
       <Container maxWidth="xs">
         <SignInPaper elevation={3}>
           <LoginIcon sx={{ fontSize: 40, color: "#01796F" }} />
@@ -110,6 +146,7 @@ const SignUp = () => {
             Sign Up
           </Typography>
           <Box component="form" sx={{ mt: 1 }} onSubmit={handleSignUp}>
+            {/* Email input field */}
             <TextField
               variant="outlined"
               margin="normal"
@@ -123,6 +160,7 @@ const SignUp = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+            {/* Password input field */}
             <TextField
               variant="outlined"
               margin="normal"
@@ -136,7 +174,9 @@ const SignUp = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            {/* Error message display */}
             {error && <Typography color="error">{error}</Typography>}
+            {/* Sign-up button */}
             <SignInButton
               type="submit"
               fullWidth
@@ -146,6 +186,7 @@ const SignUp = () => {
               Sign Up
             </SignInButton>
             <OrText variant="body2" align="center">OR</OrText>
+            {/* Navigation to sign-in page */}
             <SignInButton
               type="button"
               fullWidth
