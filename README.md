@@ -17,8 +17,10 @@
 ## 📸 Project Showcase
 
 <div align="center">
-<img src="path/to/screenshot1.png" alt="Dashboard View" width="400"/>
-<img src="path/to/screenshot2.png" alt="Recipe Generation" width="400"/>
+<img src="/public/IMG_2392.jpg" alt="Dashboard View" width="400"/>
+<img src="/public/IMG_2394.jpg" alt="Dashboard View" width="400"/>
+<img src="/public/IMG_2395.jpg" alt="Dashboard View" width="400"/>
+
 </div>
 
 ## 🌟 Project Overview
@@ -97,7 +99,7 @@ Got ideas to make Inventory Pal even better? We'd love your input! Feel free to 
 
 <div align="center">
 
-Crafted with ❤️ by [Your Name]
+Author: Ahmed Ayaz :)
 
 [⬆ Back to top](#-inventory-pal)
 
