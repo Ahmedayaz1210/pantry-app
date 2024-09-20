@@ -47,7 +47,7 @@ Inventory Pal revolutionizes home cooking by offering a smart, intuitive invento
 
 1. Clone the culinary magic:
    ```bash
-   git clone https://github.com/your-username/inventory-pal.git
+   git clone https://github.com/Ahmedayaz1210/pantry-app.git
    cd inventory-pal
    ```
 
